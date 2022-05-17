@@ -8,6 +8,8 @@ $info['MinerBlockHeight'] = trim(file_get_contents("/var/dashboard/statuses/info
 $info['Version'] = trim(file_get_contents("/var/dashboard/version"));
 $info['Update'] = trim(file_get_contents("/var/dashboard/update"));
 $info['MinerVersion'] = trim(file_get_contents('/var/dashboard/statuses/current_miner_version'));
+$info['MinerVerStr'] = shell_exec("cat /var/dashboard/statuses/current_miner_version | awk -F '_' '{ print $2 }' | sed 's/\.//g'");
+$info['LightMinerFirstVerStr'] = '202205100';
 $info['LatestMinerVersion'] = trim(file_get_contents('/var/dashboard/statuses/latest_miner_version'));
 $info['PantherXVer'] = trim(file_get_contents("/var/dashboard/statuses/pantherx_ver"));
 $info['FirmwareVersion'] = trim(file_get_contents("/etc/ota_version"));
@@ -117,7 +119,11 @@ if ($info['PantherXVer'] == 'X1') {
 					break;
 
 				case 'minerloganalyzer':
-					include('/var/dashboard/pages/minerloganalyzer.php');
+					if ($info['MinerVerStr'] >= $info['LightMinerFirstVerStr']) {
+						include('/var/dashboard/pages/minerloganalyzer-light.php');
+					} else {
+						include('/var/dashboard/pages/minerloganalyzer.php');
+					}
 					break;
 
 				default:
