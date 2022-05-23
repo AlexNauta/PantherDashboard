@@ -171,6 +171,10 @@ function generateStats($beacons) {
  */
 function generateList($beacons) {
 
+	if (empty($beacons)) {
+		return '';
+	}
+
 	$systemDate = new DateTime();
 
 	$output = "<br>";
@@ -187,7 +191,7 @@ function generateList($beacons) {
 
 	foreach ($beacons as $beacon) {
 
-		$datetime = DateTime::createFromFormat('Y-m-d H:i:s.u',$beacon['datetime'], new DateTimeZone( 'UTC' ));
+		$datetime = DateTime::createFromFormat('Y-m-d H:i:s.u',$beacon['datetime']);
 		$datetime->setTimezone($systemDate->getTimezone());
 
 		$rssi = str_pad($beacon['rssi'], 4, " ", STR_PAD_LEFT);
@@ -221,7 +225,7 @@ function generateList($beacons) {
 function extractData($logsFolder, $startDate, $endDate){
 
 	$beacons = [];
-	$filenames = glob("{$logsFolder}console*.log*");
+	$filenames = glob("{$logsFolder}console.log");
 
 	if (empty($filenames)){
 		echo "No logs found. Please chdir to the Helium miner logs folder or specify a path.\n";
